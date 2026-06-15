@@ -90,6 +90,25 @@ AptitudeX is a **full-stack career acceleration platform** built for job seekers
 
 </td>
 </tr>
+<tr>
+<td width="50%">
+
+### 🐙 GitHub Portfolio Analyzer
+- **Metrics Aggregation** — Aggregate repository counts, stars, and cloned fork statistics
+- **Language Breakdown** — Interactive breakdown showing language distribution percentages
+- **Highlight Projects** — Showcase top repositories with direct codebase source links
+- **AI Code Audit** — Leverage Gemini and Cohere AI to generate complete career audits and role suggestions
+
+</td>
+<td width="50%">
+
+### 📱 Mobile Responsive Layout
+- **Adaptive Sidebar** — Collapsible sidebar rail on desktop that translates into a slide-drawer overlay on mobile
+- **Floating Mobile Toggle** — Clean floating toggle buttons appearing automatically under narrow viewports
+- **Fluid Grid Scaling** — Custom paddings and layout scaling to make all insights card containers look professional on any device width
+
+</td>
+</tr>
 </table>
 
 <br/>
@@ -132,6 +151,11 @@ AptitudeX/
 │
 └── 📄 README.md
 ```
+
+<br/>
+
+## 🌐 Production Deployment
+For complete production deployment guidelines using services like MongoDB Atlas, Render, and Vercel, check out our detailed [Deployment & Connection Guide](deployment_guide.md).
 
 <br/>
 
@@ -248,6 +272,15 @@ Create a `.env` file in the `backend/` directory (see `.env.example`):
 | `POST` | `/api/learning/generate-roadmap` | Generate personalized roadmap |
 | `GET` | `/api/analytics/dashboard` | Get analytics data |
 | `GET` | `/api/job-roles` | List all job roles |
+
+</details>
+
+<details>
+<summary><b>🐙 GitHub Portfolio Analyzer</b></summary>
+
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| `GET` | `/api/github/analyze/:username` | Query live GitHub statistics and generate AI career audit |
 
 </details>
 
