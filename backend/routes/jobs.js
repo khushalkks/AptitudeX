@@ -4,6 +4,16 @@ import axios from 'axios';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
+  const apiKey = process.env.RAPIDAPI_KEY;
+  
+  if (!apiKey) {
+    return res.status(503).json({
+      error: 'RAPIDAPI_KEY is not configured',
+      message: 'Please add your RapidAPI key to the .env file. Get one from https://rapidapi.com/',
+      data: []
+    });
+  }
+
   const {
     query = 'developer jobs',
     location = 'chicago',
@@ -23,7 +33,7 @@ router.get('/', async (req, res) => {
       date_posted
     },
     headers: {
-      'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+      'x-rapidapi-key': apiKey,
       'x-rapidapi-host': 'jsearch.p.rapidapi.com'
     }
   };

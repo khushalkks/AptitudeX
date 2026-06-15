@@ -36,23 +36,37 @@ const UserProfile = ({ isOpen, setIsOpen }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [profileVisibility, setProfileVisibility] = useState('public');
 
-  // Mock user data
-  const userData = {
-    name: "Alex Johnson",
-    email: "alex.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    title: "Senior Software Engineer",
-    company: "TechCorp Inc.",
-    experience: "5+ years",
-    education: "MS Computer Science",
-    joinDate: "January 2024",
-    profileCompletion: 92,
-    resumeScore: 85,
-    applicationsCount: 47,
-    interviewsCount: 12,
-    offersCount: 3
-  };
+  // Load user data dynamically from localStorage or fall back to defaults
+  const [userData] = useState(() => {
+    const stored = localStorage.getItem("user");
+    let name = "Alex Johnson";
+    let email = "alex.johnson@email.com";
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.name) name = parsed.name;
+        if (parsed.email) email = parsed.email;
+      } catch (e) {
+        console.error("Failed to parse user details:", e);
+      }
+    }
+    return {
+      name,
+      email,
+      phone: "+1 (555) 123-4567",
+      location: "San Francisco, CA",
+      title: "Senior Software Engineer",
+      company: "TechCorp Inc.",
+      experience: "5+ years",
+      education: "MS Computer Science",
+      joinDate: "January 2024",
+      profileCompletion: 92,
+      resumeScore: 85,
+      applicationsCount: 47,
+      interviewsCount: 12,
+      offersCount: 3
+    };
+  });
 
   const achievements = [
     { title: "Profile Champion", description: "Complete your profile 100%", progress: 92, max: 100, icon: <User size={16} /> },

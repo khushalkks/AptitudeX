@@ -343,7 +343,7 @@ export default function Analytics() {
         </div>
 
         {/* File Upload Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8 mb-8 border border-gray-100">
           <div className="flex items-center space-x-4 mb-6">
             <div className="p-3 bg-blue-50 rounded-full">
               <Upload className="text-blue-600 w-6 h-6" />
@@ -460,7 +460,7 @@ export default function Analytics() {
         </div>
 
         {/* ATS Score Card */}
-        <div className={`bg-white rounded-xl shadow-lg p-8 mb-8 border border-gray-100 ${scoreStatus.ring} ring-2`}>
+        <div className={`bg-white rounded-xl shadow-lg p-5 sm:p-8 mb-8 border border-gray-100 ${scoreStatus.ring} ring-2`}>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <div className={`p-4 ${scoreStatus.bg} rounded-xl`}>
@@ -597,7 +597,7 @@ export default function Analytics() {
         </div>
 
         {/* AI-Powered Suggestions */}
-        <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8 border border-gray-100 mb-8">
           <div className="flex items-center space-x-4 mb-6">
             <div className="p-4 bg-green-50 rounded-xl">
               <Lightbulb className="text-green-600 w-8 h-8" />

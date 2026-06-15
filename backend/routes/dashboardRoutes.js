@@ -65,7 +65,9 @@ router.post('/add-application', async (req, res) => {
     const io = req.app.get('io');
 
     // 🔥 Notify all connected clients
-    io.emit('new-application', newApp);
+    if (io) {
+      io.emit('new-application', newApp);
+    }
 
     res.status(201).json(newApp);
   } catch (err) {
@@ -73,5 +75,48 @@ router.post('/add-application', async (req, res) => {
   }
 });
 
+// Update application status or details
+router.put('/update-application/:id', async (req, res) => {
+  try {
+    const updatedApp = await Application.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedApp) {
+      return res.status(404).json({ message: 'Application not found' });
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('update-application', updatedApp);
+    }
+
+    res.json(updatedApp);
+  } catch (err) {
+    console.error('Error updating application:', err.message);
+    res.status(500).json({ message: 'Error updating application' });
+  }
+});
+
+// Delete an application
+router.delete('/delete-application/:id', async (req, res) => {
+  try {
+    const deletedApp = await Application.findByIdAndDelete(req.params.id);
+    if (!deletedApp) {
+      return res.status(404).json({ message: 'Application not found' });
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('delete-application', req.params.id);
+    }
+
+    res.json({ message: 'Application deleted successfully', id: req.params.id });
+  } catch (err) {
+    console.error('Error deleting application:', err.message);
+    res.status(500).json({ message: 'Error deleting application' });
+  }
+});
 
 export default router;

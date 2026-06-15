@@ -9,63 +9,41 @@ const EnhancedSalaryInsights = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Mock salary data - replace with your API call
+  // Fetch live salary data from backend JSearch API
   const getSalaryData = async (jobTitle, experience, location) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Mock data based on inputs
-    const baseSalary = {
-      'software engineer': 85000,
-      'data scientist': 95000,
-      'product manager': 110000,
-      'designer': 70000,
-      'marketing manager': 75000,
-      'frontend developer': 80000,
-      'backend developer': 88000,
-      'devops engineer': 92000
-    };
-    
-    const experienceMultiplier = {
-      'entry': 0.8,
-      'mid': 1.0,
-      'senior': 1.3,
-      'lead': 1.6
-    };
-    
-    const locationMultiplier = {
-      'san francisco': 1.4,
-      'new york': 1.3,
-      'seattle': 1.2,
-      'austin': 1.1,
-      'chicago': 1.0,
-      'remote': 0.95,
-      'boston': 1.15,
-      'los angeles': 1.2
-    };
-    
-    const job = jobTitle.toLowerCase();
-    const exp = experience.toLowerCase();
-    const loc = location.toLowerCase();
-    
-    const base = baseSalary[job] || 75000;
-    const expMult = experienceMultiplier[exp] || 1.0;
-    const locMult = locationMultiplier[loc] || 1.0;
-    
-    const avgSalary = Math.round(base * expMult * locMult);
-    const minSalary = Math.round(avgSalary * 0.85);
-    const maxSalary = Math.round(avgSalary * 1.15);
-    
-    return {
-      jobTitle,
-      experience,
-      location,
-      avgSalary,
-      minSalary,
-      maxSalary,
-      confidence: Math.floor(Math.random() * 20) + 80, // 80-99%
-      marketTrend: Math.random() > 0.5 ? 'up' : 'stable'
-    };
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+    const headers = {};
+    const token = localStorage.getItem("token");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(
+      `${apiBaseUrl}/salary/estimate?job_title=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}&experience=${experience}`,
+      { headers }
+    );
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || `Server error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    if (result.success && result.data) {
+      const d = result.data;
+      return {
+        jobTitle: d.job_title,
+        experience: d.experience_level,
+        location: d.location,
+        avgSalary: d.average_salary || Math.round((d.min_salary + d.max_salary) / 2),
+        minSalary: d.min_salary,
+        maxSalary: d.max_salary,
+        confidence: d.confidence_score,
+        marketTrend: d.market_demand?.demand_level?.toLowerCase() === 'high' ? 'up' : 'stable'
+      };
+    } else {
+      throw new Error('No salary data found for the query.');
+    }
   };
 
   const handleSearch = async () => {
@@ -122,7 +100,7 @@ const EnhancedSalaryInsights = () => {
 
       <div className="max-w-6xl mx-auto px-6 -mt-10 relative z-10">
         {/* Search Form */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-5 sm:p-8 mb-8 border border-gray-100">
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Find Your Market Value</h2>
             <p className="text-gray-600">Enter your details to get personalized salary insights</p>
@@ -228,7 +206,7 @@ const EnhancedSalaryInsights = () => {
             {/* Main Salary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Average Salary */}
-              <div className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl p-5 sm:p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <div className="bg-white bg-opacity-20 rounded-full p-3">
                     <DollarSign className="h-8 w-8" />
@@ -246,7 +224,7 @@ const EnhancedSalaryInsights = () => {
               </div>
 
               {/* Salary Range */}
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-5 sm:p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <div className="bg-white bg-opacity-20 rounded-full p-3">
                     <TrendingUp className="h-8 w-8" />
@@ -273,7 +251,7 @@ const EnhancedSalaryInsights = () => {
               </div>
 
               {/* Confidence Score */}
-              <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
+              <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-5 sm:p-8 text-white shadow-2xl transform hover:scale-105 transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <div className="bg-white bg-opacity-20 rounded-full p-3">
                     <Star className="h-8 w-8" />
@@ -296,7 +274,7 @@ const EnhancedSalaryInsights = () => {
             </div>
 
             {/* Detailed Information */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 border border-gray-100">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Position Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">

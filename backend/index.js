@@ -74,6 +74,7 @@ import mockInterviewRoutes from './routes/mockInterviewRoutes.js';
 import learningRoutes from './routes/learningRoutes.js';
 import jobs from './routes/jobs.js';
 import ChatRoute from './routes/ChatRoute.js';
+import githubRoutes from './routes/githubRoutes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -85,6 +86,7 @@ app.use('/api/salary', salaryRoutes);
 app.use('/api/learning', learningRoutes);
 app.use('/api/jobs', jobs);
 app.use('/api/ai', ChatRoute);
+app.use('/api/github', githubRoutes);
 
 // 🏥 Health check
 app.get('/api/health', (req, res) => {

@@ -14,12 +14,32 @@ import {
   X,
   BarChart3,
   Users,
+  Github,
 } from "lucide-react";
 import UserProfile from './UserProfile';
 
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const { pathname } = useLocation();
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setIsOpen]);
+
+  React.useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
+    }
+  }, [pathname, setIsOpen]);
 
   const navItems = [
     { to: "/", label: "Dashboard", icon: <LayoutDashboard size={15} /> },
@@ -28,7 +48,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { to: "/salary-insights", label: "SalaryInsights", icon: <Target size={15} /> },
     { to: "/mock-interviews", label: "Mock Interviews", icon: <Users size={15} /> },
     { to: "/analytics", label: "Analytics", icon: <BarChart3 size={15} /> },
-  
+    { to: "/github-analyzer", label: "GitHub Analyzer", icon: <Github size={15} /> },
   ];
 
   return (
@@ -43,7 +63,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
      <aside
   className={`fixed top-0 left-0 h-full overflow-y-auto transition-all duration-500 ease-in-out z-40
-    ${isOpen ? "w-80 px-6" : "w-20 px-3"}
+    ${isOpen ? "w-80 px-6 translate-x-0" : "w-20 px-3 -translate-x-full lg:translate-x-0"}
     bg-gradient-to-b from-purple-50/95 via-white/90 to-purple-50/80
     backdrop-blur-2xl border-r border-purple-200/50 
     shadow-[0_20px_70px_rgba(147,51,234,0.15)]`}

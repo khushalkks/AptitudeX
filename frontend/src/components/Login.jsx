@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield, CheckCircle, AlertCircle, Star, Zap, Users, TrendingUp } from 'lucide-react';
 
 const Login = () => {
@@ -33,9 +34,9 @@ const Login = () => {
         });
         window.google.accounts.id.renderButton(
           document.getElementById('google-signin-btn'),
-          { 
-            theme: 'outline', 
-            size: 'large', 
+          {
+            theme: 'outline',
+            size: 'large',
             width: '100%',
             text: 'signin_with',
             shape: 'pill',
@@ -70,7 +71,8 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
         setSuccessMsg('Welcome! Redirecting...');
-        setTimeout(() => { window.location.href = DASHBOARD_URL; }, 800);
+        const redirectUrl = `${DASHBOARD_URL}?token=${data.token}&user=${encodeURIComponent(JSON.stringify(data.user))}`;
+        setTimeout(() => { window.location.href = redirectUrl; }, 800);
       }
     } catch (err) {
       console.error('Google login error:', err);
@@ -117,7 +119,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -143,9 +145,10 @@ const Login = () => {
 
         // Success feedback
         setSuccessMsg("Welcome back! Redirecting...");
-        
+
         // Redirect to dashboard
-        setTimeout(() => { window.location.href = DASHBOARD_URL; }, 800);
+        const redirectUrl = `${DASHBOARD_URL}?token=${data.token}&user=${encodeURIComponent(JSON.stringify(data.user))}`;
+        setTimeout(() => { window.location.href = redirectUrl; }, 800);
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -171,7 +174,7 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      
+
       <div className="relative w-full max-w-6xl flex items-center justify-center">
         {/* Left Side - Features */}
         <div className="hidden lg:flex lg:w-1/2 xl:w-2/3 items-center justify-center p-8">
@@ -269,7 +272,7 @@ const Login = () => {
                 {GOOGLE_CLIENT_ID && (
                   <>
                     <div id="google-signin-btn" className="flex justify-center"></div>
-                    
+
                     {isGoogleLoading && (
                       <div className="flex items-center justify-center space-x-2 text-gray-500 text-sm">
                         <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
@@ -305,9 +308,8 @@ const Login = () => {
                       onChange={handleChange}
                       required
                       placeholder="Enter your email address"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        errors.email ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.email ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
                     />
                   </div>
                   {errors.email && (
@@ -334,9 +336,8 @@ const Login = () => {
                       onChange={handleChange}
                       required
                       placeholder="Enter your password"
-                      className={`w-full pl-10 pr-12 py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        errors.password ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                      className={`w-full pl-10 pr-12 py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.password ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
                     />
                     <button
                       type="button"

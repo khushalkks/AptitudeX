@@ -8,7 +8,7 @@ const SignUp = ({ onLogin }) => {
     password: "",
     confirmPassword: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +79,7 @@ const SignUp = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -108,7 +108,8 @@ const SignUp = ({ onLogin }) => {
         }
         // Success - redirect to dashboard
         alert("Account created successfully! Welcome to ResuMind AI!");
-        window.location.href = dashboardUrl;
+        const redirectUrl = `${dashboardUrl}?token=${data.token}&user=${encodeURIComponent(JSON.stringify(data.user))}`;
+        window.location.href = redirectUrl;
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -131,34 +132,34 @@ const SignUp = ({ onLogin }) => {
   };
 
   const formFields = [
-    { 
-      label: "Full Name", 
-      name: "name", 
-      type: "text", 
+    {
+      label: "Full Name",
+      name: "name",
+      type: "text",
       placeholder: "Enter your full name",
       icon: User
     },
-    { 
-      label: "Email Address", 
-      name: "email", 
-      type: "email", 
+    {
+      label: "Email Address",
+      name: "email",
+      type: "email",
       placeholder: "Enter your email address",
       icon: Mail
     },
-    { 
-      label: "Password", 
-      name: "password", 
-      type: showPassword ? "text" : "password", 
+    {
+      label: "Password",
+      name: "password",
+      type: showPassword ? "text" : "password",
       placeholder: "Create a strong password",
       icon: Lock,
       showToggle: true,
       toggle: () => setShowPassword(!showPassword),
       showPassword: showPassword
     },
-    { 
-      label: "Confirm Password", 
-      name: "confirmPassword", 
-      type: showConfirmPassword ? "text" : "password", 
+    {
+      label: "Confirm Password",
+      name: "confirmPassword",
+      type: showConfirmPassword ? "text" : "password",
       placeholder: "Confirm your password",
       icon: Lock,
       showToggle: true,
@@ -171,7 +172,7 @@ const SignUp = ({ onLogin }) => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      
+
       <div className="relative w-full max-w-md">
         {/* Trust Indicators */}
         <div className="text-center mb-6 space-y-2">
@@ -221,9 +222,8 @@ const SignUp = ({ onLogin }) => {
                       onChange={handleChange}
                       required
                       placeholder={placeholder}
-                      className={`w-full pl-10 pr-${showToggle ? '12' : '4'} py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        errors[name] ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                      className={`w-full pl-10 pr-${showToggle ? '12' : '4'} py-3 border rounded-xl bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors[name] ? 'border-red-300 bg-red-50/50' : 'border-gray-200 hover:border-gray-300'
+                        }`}
                     />
                     {showToggle && (
                       <button
@@ -245,21 +245,20 @@ const SignUp = ({ onLogin }) => {
                       <span>{errors[name]}</span>
                     </div>
                   )}
-                  
+
                   {/* Password Strength Indicator */}
                   {name === "password" && formData.password && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-600">Password strength:</span>
-                        <span className={`font-medium ${
-                          passwordStrength <= 2 ? 'text-red-600' : 
-                          passwordStrength <= 3 ? 'text-yellow-600' : 'text-green-600'
-                        }`}>
+                        <span className={`font-medium ${passwordStrength <= 2 ? 'text-red-600' :
+                            passwordStrength <= 3 ? 'text-yellow-600' : 'text-green-600'
+                          }`}>
                           {getPasswordStrengthText()}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
+                        <div
                           className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor()}`}
                           style={{ width: `${(passwordStrength / 5) * 100}%` }}
                         ></div>
