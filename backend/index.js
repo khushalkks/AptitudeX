@@ -15,9 +15,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 const app = express();
 
-const corsOrigins = process.env.CORS_ORIGIN 
-  ? process.env.CORS_ORIGIN.split(',') 
-  : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
+const corsOrigins = [];
+if (process.env.CORS_ORIGIN) {
+  corsOrigins.push(...process.env.CORS_ORIGIN.split(',').map(o => o.trim()));
+}
+if (process.env.FRONTEND_URL) {
+  corsOrigins.push(...process.env.FRONTEND_URL.split(',').map(o => o.trim()));
+}
+if (corsOrigins.length === 0) {
+  corsOrigins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175');
+}
 
 const server = http.createServer(app);
 const io = new Server(server, {
