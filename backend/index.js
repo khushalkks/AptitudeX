@@ -93,6 +93,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Resume Analytics API is running' });
 });
 
+// 🏠 Root route for Render link checks
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', message: 'ResuMind AI Backend is running successfully!' });
+});
+
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'API Not Found' });
