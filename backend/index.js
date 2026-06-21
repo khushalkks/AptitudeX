@@ -22,14 +22,38 @@ if (process.env.CORS_ORIGIN) {
 if (process.env.FRONTEND_URL) {
   corsOrigins.push(...process.env.FRONTEND_URL.split(',').map(o => o.trim()));
 }
-if (corsOrigins.length === 0) {
-  corsOrigins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175');
-}
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // Allow non-browser requests (e.g. server-to-server, curl)
+  
+  // If explicitly allowed in environment variables
+  if (corsOrigins.includes(origin) || corsOrigins.includes('*')) return true;
+  
+  // Default local origins
+  if (
+    origin.startsWith('http://localhost:') || 
+    origin.startsWith('http://127.0.0.1:')
+  ) return true;
+  
+  // Automatically allow all vercel and render subdomains to prevent deployment CORS issues
+  if (origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+    return true;
+  }
+  
+  return false;
+};
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS Blocked] Socket.io connection from origin: ${origin}`);
+        callback(null, false);
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
@@ -61,7 +85,14 @@ mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://
 
 // 📦 Middlewares
 app.use(cors({
-  origin:  corsOrigins,
+  origin: (origin, callback) => {
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS Blocked] Express request from origin: ${origin}`);
+      callback(null, false);
+    }
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' }));
